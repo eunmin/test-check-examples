@@ -3,7 +3,8 @@
             [test-check-examples.core :refer :all]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.generators :as gen]
-            [clojure.test.check.properties :as prop]))
+            [clojure.test.check.properties :as prop]
+            [clojure.spec.test.alpha :as stest]))
 
 (defspec sort-idempotent-prop
   (prop/for-all [v (gen/vector gen/int)]
@@ -18,3 +19,9 @@
   (prop/for-all [v (gen/not-empty (gen/vector gen/int))]
                 (= (apply min v)
                    (first (sort v)))))
+
+(deftest ranged-rand-test
+  (is (true? (-> (stest/check `ranged-rand)
+                 first
+                 :clojure.spec.test.check/ret
+                 :result))))
